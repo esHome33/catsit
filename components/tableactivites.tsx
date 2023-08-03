@@ -3,18 +3,24 @@
 import { Fab, List } from "@mui/material";
 import Ligne from "./ligne";
 import { Add } from "@mui/icons-material";
+import { Donnees } from "@/types/data";
 
+type Props = {
+    datas: Donnees;
+};
 
-type Props = {}
-
-const Mytable = (_props: Props) => {
-    const b1 = [true, true, false, false, false, false, true];
-    const b2 = [false, false, true, true, true, true, false];
+const TableActivites = (props: Props) => {
+    
 
     return (<>
         <List>
-            <Ligne day={b1} acti="coudre" />
-            <Ligne day={b2} acti="eplucher" />
+            {
+                props.datas.map((val, index) => {
+                    
+                    return (<Ligne data={val} cle={index} />)
+                })
+            }
+            
         </List>
         <Fab color="primary" aria-label="add" variant="extended"
             className="absolute bottom-4 left-4 bg-blue-300"
@@ -29,4 +35,4 @@ const Mytable = (_props: Props) => {
     )
 }
 
-export default Mytable;
+export default TableActivites;
