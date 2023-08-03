@@ -1,38 +1,28 @@
 
 
 import TableActivites from "@/components/tableactivites";
-import { Donnees } from "@/types/data";
+import { DataRow, Donnees } from "@/types/data";
+import { Database } from "@/types/supabase";
 import { Container, Typography } from "@mui/material";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
 
+const Page = async () => {
 
-const Page = () => {
+    const supabase = createServerComponentClient({ cookies });
 
-    const datas: Donnees = [
-        {
-            id: 1,
-            activite: "croquettes",
-            days: [true, true, false, false, false, false, true],
-            done: [false, false, false, false, false, false, false],
-            photo: ""
-        },
-        {
-            id: 2,
-            activite: "smilla",
-            days: [true, true, true, true, true, true, true],
-            done: [false, false, false, false, false, false, false],
-            photo: ""
-        }
-
-    ]
-
+    const { data: data } = await supabase.from("actions").select();
+    const donnees = data as Donnees;
+    console.log(data);
+    
     return (
         <>
             <Container className="flex flex-col items-start">
                 <div className="bg-[#f0ee5a] mb-4 rounded-lg px-4 py-2">
                     <Typography variant="h6" fontWeight={"bold"} className="text-orange-900">PAGE PROPRIETAIRE</Typography>
                 </div>
-                <TableActivites datas={datas} />
+                <TableActivites datas={donnees} />
             </Container>
 
         </>

@@ -1,19 +1,22 @@
 "use client";
 
 
-import { DataRow } from '@/types/data';
+import { DataRowTransformed } from '@/types/data';
 import { Button, Checkbox, ListItem, TextField, Typography } from '@mui/material';
+import { createClient } from '@supabase/supabase-js';
 import React, { useState } from 'react'
 
 type Props = {
-    data: DataRow;
+    data: DataRowTransformed;
     cle: number;
 }
 
 
 const Ligne = (props: Props) => {
-    let initial_acti = props.data.activite;
-    let init_days = props.data.days;
+
+
+    const [initial_acti, setInitial_acti] = useState(props.data.activite);
+    const [init_days, setInit_days] = useState(props.data.days);
     const [activite, setActivite] = useState(initial_acti);
     const [btnLabel, setBtnLabel] = useState<string>("Edit");
     const [c_lundi, setC_lundi] = useState<boolean>(props.data.days[0]);
@@ -24,6 +27,9 @@ const Ligne = (props: Props) => {
     const [c_samedi, setC_samedi] = useState<boolean>(props.data.days[5]);
     const [c_dimanche, setC_dimanche] = useState<boolean>(props.data.days[6]);
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
     const check_days_changed = (just_changed: number) => {
         const ref0 = init_days[0];
@@ -128,7 +134,7 @@ const Ligne = (props: Props) => {
         }
     }
 
-    const saveNewData = () => {
+    const saveNewData = async () => {
         let bool = "";
 
         if (c_lundi) {
@@ -169,17 +175,31 @@ const Ligne = (props: Props) => {
         console.log("acti = " + activite + " jours " + bool);
         changeInitValues(bool, activite);
         setBtnLabel("Edit");
+        const { data, error } = await supabase
+            .from('actions')
+            .update({ days_to_do: bool, activite:activite })
+            .eq('id', props.data.id)
+            .select();
+        if (data) {
+            console.log('UPDATE réussi pour id=' + props.data.id);
+        } else if (error) {
+            console.log("ERREUR lors de UPDATE id=" + props.data.id);
+        }
     }
 
     const changeInitValues = (jours: string, acti: string) => {
-        init_days[0] = jours.charAt(0) === "0" ? false : true;
-        init_days[1] = jours.charAt(1) === "0" ? false : true;
-        init_days[2] = jours.charAt(2) === "0" ? false : true;
-        init_days[3] = jours.charAt(3) === "0" ? false : true;
-        init_days[4] = jours.charAt(4) === "0" ? false : true;
-        init_days[5] = jours.charAt(5) === "0" ? false : true;
-        init_days[6] = jours.charAt(6) === "0" ? false : true;
-        initial_acti = acti;
+        setInitial_acti(acti);
+        setInit_days(() => {
+            const resu: boolean[] = [];
+            resu.push(jours.charAt(0) === "0" ? false : true);
+            resu.push(jours.charAt(1) === "0" ? false : true);
+            resu.push(jours.charAt(2) === "0" ? false : true);
+            resu.push(jours.charAt(3) === "0" ? false : true);
+            resu.push(jours.charAt(4) === "0" ? false : true);
+            resu.push(jours.charAt(5) === "0" ? false : true);
+            resu.push(jours.charAt(6) === "0" ? false : true);
+            return resu;
+        })
     }
 
     const resetData = () => {
@@ -196,7 +216,7 @@ const Ligne = (props: Props) => {
 
     return (
         <>
-            <ListItem className="border border-red-400 rounded-lg mb-2 flex flex-col sm:flex-row items-center" key={props.cle} >
+            <ListItem className="border border-red-400 rounded-lg mb-2 flex flex-col sm:flex-row items-center drop-shadow" key={props.cle} >
                 <TextField label="activité" size='small' className='my-2 mr-4 min-w-min bg-orange-100'
                     InputProps={{ readOnly: false }}
                     value={activite}
