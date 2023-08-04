@@ -105,8 +105,8 @@ const ListeActions = (props: Props) => {
 
 
     return (<>
-        <div className='mt-4'>
-            <List className='bg-yellow-50 rounded drop-shadow-md'>
+        <div className='mt-4 drop-shadow'>
+            <List className='bg-yellow-50 text-blue-900 rounded drop-shadow-md'>
 
                 {afficher ? afficher.map((elt) => {
                     const done = isDone(elt);

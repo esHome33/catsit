@@ -1,10 +1,7 @@
-"use client";
-
-import { AppBar, Avatar, Container, IconButton, Toolbar, Typography, Button } from '@mui/material'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { useRouter } from 'next/navigation';
+import MyToolbar from '@/components/toolbar';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -37,42 +34,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const router = useRouter();
-  const goto = (where: string) => {
-    router.push(where);
-  };
+ 
   return (
     <html lang="fr">
-      <body className={inter.className  }>
+      <body className={inter.className} style={{backgroundColor:'whitesmoke'}}>
         <main>
-          <AppBar>
-            <Container maxWidth="xl">
-              <Toolbar disableGutters>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                  onClick={() => goto("/")}
-                >
-                  <Avatar alt="Menu" src="/logo.png" />
-                </IconButton>
-                <Button
-                  sx={{ mr: 2, backgroundColor:"green",color:"white" }}
-                  onClick={() => goto("catsitter")}
-                >
-                  <Typography>CatSitter</Typography>
-                </Button>
-                <Button
-                  sx={{ mr: 2, backgroundColor: "blue", color: "white" }}
-                  onClick={() => goto("owner")}
-                >
-                  <Typography>Proprietaire</Typography>
-                </Button>
-              </Toolbar>
-            </Container>
-          </AppBar>
+          <MyToolbar />
           <div className='mt-20 flex'>
             {children}
           </div>

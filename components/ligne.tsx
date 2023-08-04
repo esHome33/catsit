@@ -239,13 +239,13 @@ const Ligne = (props: Props) => {
                 />
                 <div className='flex flex-col'>
                     <div className='flex flex-row space-x-2'>
-                        <Typography variant='body2' className='w-6'>Lun</Typography>
-                        <Typography variant='body2' className='w-6'>Mar</Typography>
-                        <Typography variant='body2' className='w-6'>Mer</Typography>
-                        <Typography variant='body2' className='w-6'>Jeu</Typography>
-                        <Typography variant='body2' className='w-6'>Ven</Typography>
-                        <Typography variant='body2' className='w-6'>Sam</Typography>
-                        <Typography variant='body2' className='w-6'>Dim</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Lun</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Mar</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Mer</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Jeu</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Ven</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Sam</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Dim</Typography>
                     </div>
                     <div className='flex flex-row space-x-2'>
                         <Checkbox className='w-6' checked={c_lundi}

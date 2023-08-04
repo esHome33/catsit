@@ -42,7 +42,7 @@ const Page = () => {
                     <Typography variant="h6" fontWeight={"bold"} className="text-orange-50">PAGE CATSITTER</Typography>
                 </div>
                 <div>
-                    <Typography variant="body1">Nous sommes {today} ({auj.toLocaleDateString()})</Typography>
+                    <Typography variant="body1" className="text-blue-900">Nous sommes {today} ({auj.toLocaleDateString()})</Typography>
                 </div> 
                 <ListeActions jour={new Date("08/07/2023").getDay()} />
             </Container>
