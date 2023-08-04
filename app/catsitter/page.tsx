@@ -1,12 +1,14 @@
 
+import ListeActions from "@/components/listeactions";
 import { Container, Typography } from "@mui/material";
 
 
 const Page = () => {
 
-    const day = new Date;
-    const dd = day.getDay();
-    const getNomDay = (day: number)=>{
+    const auj = new Date;
+    
+    const getNomDay = () => {
+        const day = auj.getDay();
         if (day === 1) {
             return "Lundi";
         }
@@ -31,6 +33,8 @@ const Page = () => {
         return "jour_" + day;
     }
 
+    const today = getNomDay();
+
     return (
         <>
             <Container className="flex flex-col items-start">
@@ -38,8 +42,9 @@ const Page = () => {
                     <Typography variant="h6" fontWeight={"bold"} className="text-orange-50">PAGE CATSITTER</Typography>
                 </div>
                 <div>
-                    <Typography variant="body1">Nous sommes {getNomDay(dd) }</Typography>
-                </div>
+                    <Typography variant="body1">Nous sommes {today} ({auj.toLocaleDateString()})</Typography>
+                </div> 
+                <ListeActions jour={new Date("08/07/2023").getDay()} />
             </Container>
 
         </>

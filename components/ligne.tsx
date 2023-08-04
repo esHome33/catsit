@@ -2,8 +2,9 @@
 
 
 import { DataRowTransformed } from '@/types/data';
+import { Database } from '@/types/supabase';
 import { Button, Checkbox, ListItem, TextField, Typography } from '@mui/material';
-import { createClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import React, { useState } from 'react'
 
 type Props = {
@@ -19,6 +20,9 @@ const Ligne = (props: Props) => {
     const [init_days, setInit_days] = useState(props.data.days);
     const [activite, setActivite] = useState(initial_acti);
     const [btnLabel, setBtnLabel] = useState<string>("Edit");
+    if (!props.data.days) {
+        console.log('LIGNE : ERREUR : ', props.data);
+    }
     const [c_lundi, setC_lundi] = useState<boolean>(props.data.days[0]);
     const [c_mardi, setC_mardi] = useState<boolean>(props.data.days[1]);
     const [c_mercredi, setC_mercredi] = useState<boolean>(props.data.days[2]);
@@ -29,7 +33,7 @@ const Ligne = (props: Props) => {
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    const supabase = createClientComponentClient<Database>({ supabaseUrl, supabaseKey });
 
     const check_days_changed = (just_changed: number) => {
         const ref0 = init_days[0];
@@ -177,20 +181,21 @@ const Ligne = (props: Props) => {
         setBtnLabel("Edit");
         const { data, error } = await supabase
             .from('actions')
-            .update({ days_to_do: bool, activite:activite })
+            .update({ days_to_do: bool, activite: activite })
             .eq('id', props.data.id)
             .select();
         if (data) {
+            setActivite(() => activite);
             console.log('UPDATE réussi pour id=' + props.data.id);
         } else if (error) {
-            console.log("ERREUR lors de UPDATE id=" + props.data.id);
+            console.log("ERREUR lors de UPDATE id=" + props.data.id + " / " + error.message);
         }
     }
 
     const changeInitValues = (jours: string, acti: string) => {
-        setInitial_acti(acti);
-        setInit_days(() => {
-            const resu: boolean[] = [];
+        setInitial_acti((_initial_acti )=> acti);
+        setInit_days((resu) => {
+            resu = [];
             resu.push(jours.charAt(0) === "0" ? false : true);
             resu.push(jours.charAt(1) === "0" ? false : true);
             resu.push(jours.charAt(2) === "0" ? false : true);
@@ -225,9 +230,9 @@ const Ligne = (props: Props) => {
                         const new_acti = val.target.value;
                         if (new_acti === initial_acti) {
                             setBtnLabel("Edit");
-                            setActivite(initial_acti);
+                            setActivite(()=>initial_acti);
                         } else {
-                            setActivite(new_acti);
+                            setActivite(()=>new_acti);
                             setBtnLabel("Save");
                         }
                     }}
