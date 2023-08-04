@@ -37,7 +37,7 @@ export default function RootLayout({
  
   return (
     <html lang="fr">
-      <body className={inter.className} style={{backgroundColor:'whitesmoke'}}>
+      <body className={inter.className} style={{backgroundColor:'whitesmoke', color:'darkslateblue'}}>
         <main>
           <MyToolbar />
           <div className='mt-20 flex'>
