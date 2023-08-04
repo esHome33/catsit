@@ -99,7 +99,7 @@ const ListeActions = (props: Props) => {
 
     }
 
-    const checkChange = (_e: React.ChangeEvent<HTMLInputElement>,check:boolean, id:number) => {
+    const checkChange = (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number) => {
         console.log('chek chg : checked =' + check + " pour id=" + id);
     }
 
@@ -108,14 +108,17 @@ const ListeActions = (props: Props) => {
         <div className='mt-4 drop-shadow'>
             <List className='bg-yellow-50 text-blue-900 rounded drop-shadow-md'>
 
-                {afficher ? afficher.map((elt) => {
+                {afficher ? afficher.map((elt, index) => {
                     const done = isDone(elt);
                     return (
-                        <ListItem secondaryAction={<Checkbox checked={done} onChange={(e,c)=>checkChange(e,c,elt.id)}/>}
+                        <ListItem
+                            secondaryAction={<Checkbox checked={done}
+                                onChange={(e, c) => checkChange(e, c, elt.id)} />}
+                            key={index}
                         >
                             <span className='mr-20'>
                                 <Typography variant='body1'>
-                                {elt.activite }
+                                    {elt.activite}
 
                                 </Typography>
                             </span>
