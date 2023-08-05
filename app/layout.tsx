@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Simple Catsitter WebApp',
   description: 'Webapp for cat sitters and cat owners',
-  icons: "/favicon.ico",
+  icons: { icon: "/favicon.ico", apple:"/apple-icon.png"},
   generator: 'Next.js',
   applicationName: 'CatSitter',
   referrer: 'origin-when-cross-origin',

@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-	appleIcon: `/public/apple-icon.png`,
-};
+const nextConfig = {};
 
-module.exports = nextConfig
+module.exports = nextConfig;
