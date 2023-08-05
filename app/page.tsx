@@ -14,11 +14,10 @@ export default function Home() {
   return (
     <Container className="text-center flex flex-col items-center">
       <Typography variant="body2">Cat Sitter Webapp</Typography>
-      <Image alt="Mon beau Chat Catsitter" src="/intro.png" width={"259"} height={"400"} priority={true} />
+      <Image alt="Mon beau Chat Mathilda" src="/intro.jpg" width={"406"} height={"500"} priority={true} />
       <Typography variant="body2" className="justify-items-center">
-        Photo de <Link href="https://unsplash.com/fr/@madhatterzone?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-          Manja Vitolic</Link> sur <Link href="https://unsplash.com/fr/photos/04_qbR719GU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-          Unsplash</Link>
+        Photo de <Link href="https://github.com/XNxa/">
+          Xavier</Link> sur IPhone 😉
       </Typography>
 
     </Container>
