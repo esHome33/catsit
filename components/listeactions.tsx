@@ -1,8 +1,9 @@
 "use client";
 
+import { changeBool, getBoolean } from '@/lib/days';
 import { DataRow } from '@/types/data'
 import { Database } from '@/types/supabase'
-import { Checkbox, List, ListItem, Typography } from '@mui/material';
+import { Checkbox, List, ListItem, Typography, tabClasses } from '@mui/material';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react'
@@ -15,7 +16,7 @@ const ListeActions = (props: Props) => {
 
     const jour = props.jour;
 
-    
+
 
     const isForToday = (action: DataRow) => {
         // jour est le numéro de DIM LUN MAR MER JEU VEN SAM
@@ -42,6 +43,7 @@ const ListeActions = (props: Props) => {
 
     const [afficher, setAfficher] = useState<DataRow[]>([]);
     const [checks, setChecks] = useState<boolean[]>([]);
+    const [indexes, setIndexes] = useState<number[]>([]);
 
     const traite_chgts = (payload: RealtimePostgresChangesPayload<{
         [key: string]: any;
@@ -71,16 +73,24 @@ const ListeActions = (props: Props) => {
 
             if (data) {
                 const les_checks: boolean[] = [];
+                const les_indexs: number[] = [];
                 setAfficher(data.filter((elt) => {
-                    les_checks.push(false);
-                    return isForToday(elt);
+                    const selectionner = isForToday(elt);
+                    if (selectionner) {
+                        const val = getBoolean(jour, elt.days_done);
+                        les_checks.push(val);
+                        les_indexs.push(elt.id);
+                    }
+                    return selectionner;
                 }));
 
                 setChecks(les_checks);
+                setIndexes(les_indexs);
 
             } else {
                 setAfficher([]);
                 setChecks([]);
+                setIndexes([]);
             }
         };
 
@@ -100,13 +110,31 @@ const ListeActions = (props: Props) => {
     }
 
     const checkChange = (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number) => {
-        //console.log('chek chg : checked =' + check + " pour id=" + id);
-        const old_val = checks[id];
-        if (old_val !== check) {
-            setChecks((table) => {
-                table[id] = check;
-                return table;
-            });
+        const ou_est_id = indexes.findIndex((val) => {
+            return (val === id);
+        });
+        
+        //console.log('chek chg : checked =' + check + " pour id=" + id + " avec jour = " + jour + " id est à " + ou_est_id + " idxs " + JSON.stringify(indexes));
+
+        if (ou_est_id >= 0) {
+            const old_val = checks[ou_est_id];
+            if (old_val !== check) {
+                console.log(`chgt de valeur ${old_val} par ${check}  table = ${checks}`);
+                const new_table: boolean[] = [];
+                checks.forEach((elt, idx) => {
+                    if (idx === ou_est_id) {
+                        new_table.push(!elt);
+                    } else {
+                        new_table.push(elt);
+                    }
+                });
+                console.log(`nouvelle table = ${new_table}`);
+                setChecks(new_table);
+            } else {
+                console.log(`la valeur est la même !`);
+            }
+        } else {
+            console.log(` id non trouvé (${id}) dans ${indexes}`);
         }
     }
 
@@ -116,11 +144,11 @@ const ListeActions = (props: Props) => {
             <List className='bg-yellow-50 text-blue-900 rounded drop-shadow-md'>
 
                 {afficher ? afficher.map((elt, index) => {
-                    const done = isDone(elt);
+                    
                     return (
                         <ListItem
                             secondaryAction={<Checkbox
-                                checked={done}
+                                checked={checks[index]}
                                 onChange={(e, c) => checkChange(e, c, elt.id)}
                                 value={checks[index]}
                             />}
