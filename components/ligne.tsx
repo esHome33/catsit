@@ -79,18 +79,14 @@ const Ligne = (props: Props) => {
                 break;
         }
 
-        if (actual0 === ref0
+        return (actual0 === ref0
             && actual1 === ref1
             && actual2 === ref2
             && actual3 === ref3
             && actual4 === ref4
             && actual5 === ref5
             && actual6 === ref6
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        );
     }
 
     const change_jour = (e: React.ChangeEvent<HTMLInputElement>, jour: number) => {
@@ -193,7 +189,7 @@ const Ligne = (props: Props) => {
     }
 
     const changeInitValues = (jours: string, acti: string) => {
-        setInitial_acti((_initial_acti )=> acti);
+        setInitial_acti((_initial_acti) => acti);
         setInit_days((resu) => {
             resu = [];
             resu.push(jours.charAt(0) === "0" ? false : true);
@@ -230,9 +226,9 @@ const Ligne = (props: Props) => {
                         const new_acti = val.target.value;
                         if (new_acti === initial_acti) {
                             setBtnLabel("Edit");
-                            setActivite(()=>initial_acti);
+                            setActivite(() => initial_acti);
                         } else {
-                            setActivite(()=>new_acti);
+                            setActivite(() => new_acti);
                             setBtnLabel("Save");
                         }
                     }}

@@ -2,8 +2,7 @@
 
 import { DataRow } from '@/types/data'
 import { Database } from '@/types/supabase'
-import { CheckBox } from '@mui/icons-material';
-import { Button, Checkbox, List, ListItem, Typography } from '@mui/material';
+import { Checkbox, List, ListItem, Typography } from '@mui/material';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react'
@@ -16,7 +15,7 @@ const ListeActions = (props: Props) => {
 
     const jour = props.jour;
 
-    const supabase = createClientComponentClient<Database>();
+    
 
     const isForToday = (action: DataRow) => {
         // jour est le numéro de DIM LUN MAR MER JEU VEN SAM
@@ -26,10 +25,7 @@ const ListeActions = (props: Props) => {
             jour_effectif = 6;
         }
         const j_action = action.days_to_do.charAt(jour_effectif)
-        if (j_action === "0") {
-            return false;
-        } else
-            return true;
+        return (j_action !== "0")
     }
 
     const isDone = (action: DataRow) => {
@@ -40,14 +36,12 @@ const ListeActions = (props: Props) => {
             jour_effectif = 6;
         }
         const j_action = action.days_done.charAt(jour_effectif)
-        if (j_action === "0") {
-            return false;
-        } else
-            return true;
+        return (j_action !== "0")
     }
 
 
     const [afficher, setAfficher] = useState<DataRow[]>([]);
+    const [checks, setChecks] = useState<boolean[]>([]);
 
     const traite_chgts = (payload: RealtimePostgresChangesPayload<{
         [key: string]: any;
@@ -71,16 +65,22 @@ const ListeActions = (props: Props) => {
     }
 
     useEffect(() => {
+        const supabase = createClientComponentClient<Database>();
         const sup_get = async () => {
             const { data: data } = await supabase.from("actions").select();
 
             if (data) {
+                const les_checks: boolean[] = [];
                 setAfficher(data.filter((elt) => {
+                    les_checks.push(false);
                     return isForToday(elt);
                 }));
 
+                setChecks(les_checks);
+
             } else {
                 setAfficher([]);
+                setChecks([]);
             }
         };
 
@@ -92,7 +92,7 @@ const ListeActions = (props: Props) => {
         return () => {
             supabase.removeChannel(id);
         }
-    }, [, jour]);
+    }, []);
 
 
     const action_changed = () => {
@@ -100,7 +100,14 @@ const ListeActions = (props: Props) => {
     }
 
     const checkChange = (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number) => {
-        console.log('chek chg : checked =' + check + " pour id=" + id);
+        //console.log('chek chg : checked =' + check + " pour id=" + id);
+        const old_val = checks[id];
+        if (old_val !== check) {
+            setChecks((table) => {
+                table[id] = check;
+                return table;
+            });
+        }
     }
 
 
@@ -112,14 +119,16 @@ const ListeActions = (props: Props) => {
                     const done = isDone(elt);
                     return (
                         <ListItem
-                            secondaryAction={<Checkbox checked={done}
-                                onChange={(e, c) => checkChange(e, c, elt.id)} />}
+                            secondaryAction={<Checkbox
+                                checked={done}
+                                onChange={(e, c) => checkChange(e, c, elt.id)}
+                                value={checks[index]}
+                            />}
                             key={index}
                         >
                             <span className='mr-20'>
                                 <Typography variant='body1'>
                                     {elt.activite}
-
                                 </Typography>
                             </span>
                         </ListItem>)
