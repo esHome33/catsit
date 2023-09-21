@@ -33,7 +33,7 @@ const ListeActions = (props: Props) => {
     }>) => {
         const val = payload.eventType;
         switch (val) {
-            case "UPDATE": {
+            case "UPDATE":
                 const new_elt = payload.new as DataRow;
                 console.log(`Realtime UPDATE : ${JSON.stringify(new_elt)}`);
                 const new_aff = afficher.map((elt) => {
@@ -52,12 +52,15 @@ const ListeActions = (props: Props) => {
                 });
                 console.log('Afficher', afficher);
                 console.log('new_aff = ', new_aff);
-                setAfficher(new_aff);
-            }
+                if (new_aff.length !== 0)
+                    setAfficher((_afficher) => new_aff);
+
                 break;
             case "DELETE":
                 break;
             case "INSERT":
+                break;
+            default:
                 break;
         }
     };
@@ -93,12 +96,12 @@ const ListeActions = (props: Props) => {
 
 
 
-    const checkChange = async (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number, dones: string) => {
+    const checkChange = async (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number) => {
         const ou_est_id = indexes.findIndex((val) => {
             return (val === id);
         });
 
-        console.log('chek chg : checked =' + check + " pour id=" + id + " avec jour = " + jour + " id est à " + ou_est_id + " idxs " + JSON.stringify(indexes));
+        //console.log('chek chg : checked =' + check + " pour id=" + id + " avec jour = " + jour + " id est à " + ou_est_id + " idxs " + JSON.stringify(indexes));
 
         if (ou_est_id >= 0) {
             // change Checks
@@ -140,11 +143,11 @@ const ListeActions = (props: Props) => {
 
                 const supabase = createClientComponentClient<Database>();
                 const new_value = changeVal(afficher[ou_est_id].days_done, jour);
-                const { data, error } = await supabase.from("actions").update({ days_done: new_value }).eq("id", id).select();
-                
+                const { error } = await supabase.from("actions").update({ days_done: new_value }).eq("id", id).select();
+
                 if (error) {
                     console.log(`Err UPDATE : ${error.message}`);
-                } 
+                }
             } else {
                 console.log("la valeur est la même !");
             }
@@ -156,7 +159,7 @@ const ListeActions = (props: Props) => {
 
     return (<>
         <div className='mt-4 drop-shadow'>
-            
+
             <List className='bg-yellow-50 text-blue-900 rounded drop-shadow-md'>
 
                 {afficher ? afficher.map((elt, index) => {
@@ -165,7 +168,7 @@ const ListeActions = (props: Props) => {
                         <ListItem
                             secondaryAction={<Checkbox
                                 checked={checks[index]}
-                                onChange={(e, c) => checkChange(e, c, elt.id, elt.days_done)}
+                                onChange={(e, c) => checkChange(e, c, elt.id)}
                                 value={checks[index]}
                             />}
                             key={elt.id}
@@ -177,8 +180,8 @@ const ListeActions = (props: Props) => {
                             </span>
                         </ListItem>)
                 }) : (
-                        <Typography className='text-center font-bold mx-4'>Aucune donnée à afficher</Typography>
-                    )}
+                    <Typography className='text-center font-bold mx-4'>Aucune donnée à afficher</Typography>
+                )}
             </List>
         </div>
 

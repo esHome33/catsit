@@ -45,9 +45,9 @@ export const changeVal = (dones: string, day: number) => {
 	const apres = dones.substring(jour + 1, dones.length);
 	const retour = avant + new_val + apres;
 
-	console.log(
-		`DAYS in changeval : avant=${dones} apres=${retour} pour jour n°${day}`
-	);
+	// console.log(
+	// 	`DAYS in changeval : avant=${dones} apres=${retour} pour jour n°${day}`
+	// );
 	return retour;
 };
 
@@ -106,5 +106,5 @@ export const getNomDay = (une_date: Date) => {
 	if (day === 0) {
 		return "Dimanche";
 	}
-	return "jour_" + day;
+	return `jour_ ${day}`;
 };
