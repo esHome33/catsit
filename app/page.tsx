@@ -6,13 +6,21 @@ import Link from "next/link";
 
 export default function Home() {
 
+  function getRandomInt(max : number) {
+    return Math.floor(Math.random() * max);
+  }
 
+  
+
+  const index = getRandomInt(6);
+
+  const nom_image = (index === 0) ? '/intro.jpg' : `/intro${index}.jpg`;
 
 
   return (
     <Container className="text-center flex flex-col items-center">
       <Typography variant="body2">Cat Sitter Webapp</Typography>
-      <Image alt="Mon beau Chat Mathilda" src="/intro.jpg" width={"406"} height={"500"} priority />
+      <Image alt="ma belle petite Mathilda" src={nom_image} width={"400"} height={"470"} priority />
       <Typography variant="body2" className="justify-items-center">
         Photo de <Link href="https://github.com/XNxa/" className="underline text-blue-700">
           Xavier</Link> sur IPhone 😉
