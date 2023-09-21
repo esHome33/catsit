@@ -20,36 +20,13 @@ const ListeActions = (props: Props) => {
      * numéro est à 0 pour DIM, 1 pour LUN, 2 pour MAR ...  et 6 le SAM
      * Il faut le transformer pour qu'on puisse travailler avec 
      * les données stockées dans ma base de données.
-     */
+    */
     const jour = props.jour;
 
 
     const [afficher, setAfficher] = useState<DataRow[]>([]);
     const [checks, setChecks] = useState<boolean[]>([]);
     const [indexes, setIndexes] = useState<number[]>([]);
-
-    const traite_chgts = (payload: RealtimePostgresChangesPayload<{
-        [key: string]: any;
-    }>) => {
-        const val = payload.eventType;
-        switch (val) {
-            case "UPDATE":
-                //const new_elt = payload.new as DataRow;
-                sup_get();
-                break;
-            case "DELETE":
-                const row_supprime = payload.old as DataRow;
-                console.log(`Realtime DELETE for ${JSON.stringify(row_supprime)}`);
-                sup_get();
-                break;
-            case "INSERT":
-                console.log("Realtime DELETE");
-                break;
-            default:
-                break;
-        }
-    };
-
 
     const sup_get = async () => {
         const supabase = createClientComponentClient<Database>();
@@ -68,6 +45,30 @@ const ListeActions = (props: Props) => {
         }
 
     };
+
+    const traite_chgts = (payload: RealtimePostgresChangesPayload<{
+        [key: string]: any;
+    }>) => {
+        const val = payload.eventType;
+        switch (val) {
+            case "UPDATE":
+                //const new_elt = payload.new as DataRow;
+                sup_get();
+                break;
+            case "DELETE":
+                const row_supprime = payload.old as DataRow;
+                console.log(`Realtime DELETE for ${JSON.stringify(row_supprime)}`);
+                sup_get();
+                break;
+            case "INSERT":
+                console.log("Realtime INSERT");
+                break;
+            default:
+                break;
+        }
+    };
+
+
 
 
     useEffect(() => {

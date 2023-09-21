@@ -5,7 +5,7 @@ import Ligne from "./ligne";
 import { Add } from "@mui/icons-material";
 import { DataRow, DataRowTransformed, Donnees } from "@/types/data";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { Database } from "@/types/supabase";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
@@ -105,23 +105,25 @@ const TableActivites = (props: Props) => {
         console.log("TABLEACTIVITES : état modifié et réaffiché");
     }, [dataTransfomed]);
 
+    const addNewTask: MouseEventHandler<HTMLButtonElement> = (event) => {
+        event.preventDefault();
+        console.log("Add a new line in table");
+    }
+
 
     return (<>
         <List>
             {
                 dataTransfomed.map((val, index) => {
-                    console.log('lecture ' + index + " valeur =" , val );
-                    return (<Ligne key={index} data={val} cle={index} />)
+                    console.log(`lecture index ${index} => valeur = ${val}`);
+                    return (<Ligne key={val.id} data={val} cle={index} />)
                 })
             }
 
         </List>
         <Fab color="primary" aria-label="add" variant="extended"
             className="relative bottom-4 left-4 bg-blue-300"
-            onClick={(e) => {
-                e.preventDefault();
-                console.log("Add a new line in table");
-            }}
+            onClick={addNewTask}
         >
             <Add />
         </Fab>
