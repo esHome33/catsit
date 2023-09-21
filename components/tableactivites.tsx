@@ -46,6 +46,8 @@ const TableActivites = (props: Props) => {
                     }
                 }));
                 break;
+            default:
+                break;
 
         }
     }

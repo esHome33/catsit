@@ -34,13 +34,16 @@ const ListeActions = (props: Props) => {
         const val = payload.eventType;
         switch (val) {
             case "UPDATE":
-                const new_elt = payload.new as DataRow;
-                console.log(`Realtime UPDATE : ${JSON.stringify(new_elt)}`);
+                //const new_elt = payload.new as DataRow;
                 sup_get();
                 break;
             case "DELETE":
+                const row_supprime = payload.old as DataRow;
+                console.log(`Realtime DELETE for ${JSON.stringify(row_supprime)}`);
+                sup_get();
                 break;
             case "INSERT":
+                console.log("Realtime DELETE");
                 break;
             default:
                 break;
@@ -80,9 +83,7 @@ const ListeActions = (props: Props) => {
         }
     }, []);
 
-    useEffect(() => {
-        console.log("nouvel affichage");
-    }, [afficher]);
+
 
     const checkChange = async (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number) => {
         const ou_est_id = indexes.findIndex((val) => {

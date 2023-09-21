@@ -8,13 +8,8 @@ export default function Home() {
   function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
   }
-
-
-
   const index = getRandomInt(6);
-
   const nom_image = (index === 0) ? '/intro.jpg' : `/intro${index}.jpg`;
-
 
   return (
     <Container className="text-center flex flex-col items-center">

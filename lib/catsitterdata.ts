@@ -1,5 +1,8 @@
 import { DataRow } from "@/types/data";
 
+/**
+ * type de retour de la fonction {@link filtrerDatas}
+ */
 export type ActionsIndexesChecks = {
 	actions: DataRow[];
 	indexs: number[];
@@ -18,9 +21,12 @@ export const isForToday = (action: DataRow, jour_LUN_DIM: number) => {
 };
 
 /**
- * Fonction qui va filtrer les données en fonction du jour indiqué
+ * Fonction qui va filtrer les données en fonction du jour indiqué.
+ *
  * @param data les données des actions à faire par le catsitter
  * @param jour le numéro du jour de la semaine index 0 pour DIMANCHE (0=DIM, 1=LUN, ... 6=SAM)
+ * @returns trois nouveaux tableaux donnant les actions, les checks et les n° d'indices de chaque action
+ * 		dans les différents tableaux. return type = {@link ActionsIndexesChecks}
  */
 export const filtrerDatas: (
 	data: DataRow[],
@@ -34,8 +40,12 @@ export const filtrerDatas: (
 		jour_LUN_DIM = 6;
 	}
 	// vérifier si les items concernent le jour indiqué
-	const new_tab = data.filter((elt: DataRow) => {
+	const new_tab1 = data.filter((elt: DataRow) => {
 		return isForToday(elt, jour_LUN_DIM);
+	});
+	// ordonner suivant la 1ere lettre de l'intitulé de l'action
+	const new_tab = new_tab1.sort((elt1: DataRow, elt2: DataRow) => {
+		return elt1.activite.charCodeAt(0) - elt2.activite.charCodeAt(0);
 	});
 	// constituer les différents tableaux
 	const idx: number[] = [];
