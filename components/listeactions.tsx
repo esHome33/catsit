@@ -147,13 +147,10 @@ const ListeActions = (props: Props) => {
     }
 
 
-    return (<>
+    return (
         <div className='mt-4 drop-shadow'>
-
             <List className='bg-yellow-50 text-blue-900 rounded drop-shadow-md'>
-
                 {afficher ? afficher.map((elt, index) => {
-
                     return (
                         <ListItem
                             secondaryAction={<Checkbox
@@ -174,8 +171,6 @@ const ListeActions = (props: Props) => {
                 )}
             </List>
         </div>
-
-    </>
     )
 }
 
