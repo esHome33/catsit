@@ -115,7 +115,7 @@ const TableActivites = (props: Props) => {
 
         </List>
         <Fab color="primary" aria-label="add" variant="extended"
-            className="absolute bottom-4 left-4 bg-blue-300"
+            className="relative bottom-4 left-4 bg-blue-300"
             onClick={(e) => {
                 e.preventDefault();
                 console.log("Add a new line in table");

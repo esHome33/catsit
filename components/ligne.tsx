@@ -216,77 +216,76 @@ const Ligne = (props: Props) => {
     }
 
     return (
-        <>
-            <ListItem className="border border-red-400 rounded-lg mb-2 flex flex-col sm:flex-row items-center drop-shadow" key={props.cle} >
-                <TextField label="activité" size='small' className='my-2 mr-4 min-w-min bg-orange-100'
-                    InputProps={{ readOnly: false }}
-                    value={activite}
-                    onChange={(val) => {
-                        val.preventDefault();
-                        const new_acti = val.target.value;
-                        if (new_acti === initial_acti) {
-                            setBtnLabel("Edit");
-                            setActivite(() => initial_acti);
-                        } else {
-                            setActivite(() => new_acti);
-                            setBtnLabel("Save");
-                        }
+        <ListItem className="border border-red-400 rounded-lg mb-2 flex flex-col sm:flex-row items-center drop-shadow" key={props.cle} >
+            <TextField label="activité" size='small' className='my-2 mr-4 min-w-min bg-orange-100'
+                InputProps={{ readOnly: false }}
+                value={activite}
+                onChange={(val) => {
+                    val.preventDefault();
+                    const new_acti = val.target.value;
+                    if (new_acti === initial_acti) {
+                        setBtnLabel("Edit");
+                        setActivite(() => initial_acti);
+                    } else {
+                        setActivite(() => new_acti);
+                        setBtnLabel("Save");
+                    }
+                }}
+            />
+            <div className='flex flex-col'>
+                <div className='flex flex-row space-x-2'>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Lun</Typography>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Mar</Typography>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Mer</Typography>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Jeu</Typography>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Ven</Typography>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Sam</Typography>
+                    <Typography variant='body2' className='w-6 text-blue-900'>Dim</Typography>
+                </div>
+                <div className='flex flex-row space-x-2'>
+                    <Checkbox className='w-6' checked={c_lundi}
+                        onChange={(e) => {
+                            change_jour(e, 0);
+                        }}
+                    />
+                    <Checkbox className='w-6' checked={c_mardi} onChange={(e) => {
+                        change_jour(e, 1);
                     }}
-                />
-                <div className='flex flex-col'>
-                    <div className='flex flex-row space-x-2'>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Lun</Typography>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Mar</Typography>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Mer</Typography>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Jeu</Typography>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Ven</Typography>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Sam</Typography>
-                        <Typography variant='body2' className='w-6 text-blue-900'>Dim</Typography>
-                    </div>
-                    <div className='flex flex-row space-x-2'>
-                        <Checkbox className='w-6' checked={c_lundi}
-                            onChange={(e) => {
-                                change_jour(e, 0);
-                            }}
-                        />
-                        <Checkbox className='w-6' checked={c_mardi} onChange={(e) => {
-                            change_jour(e, 1);
-                        }}
-                        />
-                        <Checkbox className='w-6' checked={c_mercredi} onChange={(e) => {
-                            change_jour(e, 2);
-                        }}
-                        />
-                        <Checkbox className='w-6' checked={c_jeudi} onChange={(e) => {
-                            change_jour(e, 3);
-                        }}
-                        />
-                        <Checkbox className='w-6' checked={c_vendredi} onChange={(e) => {
-                            change_jour(e, 4);
-                        }}
-                        />
-                        <Checkbox className='w-6' checked={c_samedi} onChange={(e) => {
-                            change_jour(e, 5);
-                        }}
-                        />
-                        <Checkbox className='w-6' checked={c_dimanche} onChange={(e) => {
-                            change_jour(e, 6);
-                        }}
-                        />
-                    </div>
+                    />
+                    <Checkbox className='w-6' checked={c_mercredi} onChange={(e) => {
+                        change_jour(e, 2);
+                    }}
+                    />
+                    <Checkbox className='w-6' checked={c_jeudi} onChange={(e) => {
+                        change_jour(e, 3);
+                    }}
+                    />
+                    <Checkbox className='w-6' checked={c_vendredi} onChange={(e) => {
+                        change_jour(e, 4);
+                    }}
+                    />
+                    <Checkbox className='w-6' checked={c_samedi} onChange={(e) => {
+                        change_jour(e, 5);
+                    }}
+                    />
+                    <Checkbox className='w-6' checked={c_dimanche} onChange={(e) => {
+                        change_jour(e, 6);
+                    }}
+                    />
                 </div>
-                {(btnLabel === "Edit") ? null : <div className='flex flex-row mt-3'>
-                    <Button variant='outlined' className='ml-4'
-                        onClick={saveNewData}
-                    >{btnLabel}</Button>
-                    <Button variant='outlined' className='ml-4'
-                        onClick={resetData}
-                    >{"Reset"}</Button>
+            </div>
+            {(btnLabel === "Edit") ? null : <div className='flex flex-row mt-3'>
+                <Button variant='outlined' className='ml-4'
+                    onClick={saveNewData}
+                >{btnLabel}</Button>
+                <Button variant='outlined' className='ml-4'
+                    onClick={resetData}
+                >{"Reset"}</Button>
 
-                </div>
-                }
-            </ListItem>
-        </>
+            </div>
+            }
+        </ListItem>
+
     )
 }
 

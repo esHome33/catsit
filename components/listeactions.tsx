@@ -36,25 +36,7 @@ const ListeActions = (props: Props) => {
             case "UPDATE":
                 const new_elt = payload.new as DataRow;
                 console.log(`Realtime UPDATE : ${JSON.stringify(new_elt)}`);
-                const new_aff = afficher.map((elt) => {
-                    if (elt.id === new_elt.id) {
-                        const nw_datarow: DataRow = {
-                            id: new_elt.id,
-                            created_at: new_elt.created_at,
-                            activite: new_elt.activite,
-                            days_done: new_elt.days_done,
-                            days_to_do: new_elt.days_to_do,
-                            photo: new_elt.photo
-                        }
-                        return nw_datarow;
-                    } else
-                        return elt;
-                });
-                console.log('Afficher', afficher);
-                console.log('new_aff = ', new_aff);
-                if (new_aff.length !== 0)
-                    setAfficher((_afficher) => new_aff);
-
+                sup_get();
                 break;
             case "DELETE":
                 break;
@@ -65,24 +47,28 @@ const ListeActions = (props: Props) => {
         }
     };
 
+
+    const sup_get = async () => {
+        const supabase = createClientComponentClient<Database>();
+        const { data: data } = await supabase.from("actions").select();
+
+        if (data) {
+            const dic = filtrerDatas(data, jour);
+            setAfficher(dic.actions);
+            setChecks(dic.checks);
+            setIndexes(dic.indexs);
+
+        } else {
+            setAfficher([]);
+            setChecks([]);
+            setIndexes([]);
+        }
+
+    };
+
+
     useEffect(() => {
         const supabase = createClientComponentClient<Database>();
-        const sup_get = async () => {
-            const { data: data } = await supabase.from("actions").select();
-
-            if (data) {
-                const dic = filtrerDatas(data, jour);
-                setAfficher(dic.actions);
-                setChecks(dic.checks);
-                setIndexes(dic.indexs);
-
-            } else {
-                setAfficher([]);
-                setChecks([]);
-                setIndexes([]);
-            }
-        };
-
         sup_get();
         // subscribe to DB changes
         const id = supabase.channel("catsitter-chan").on("postgres_changes", {
@@ -94,7 +80,9 @@ const ListeActions = (props: Props) => {
         }
     }, []);
 
-
+    useEffect(() => {
+        console.log("nouvel affichage");
+    }, [afficher]);
 
     const checkChange = async (_e: React.ChangeEvent<HTMLInputElement>, check: boolean, id: number) => {
         const ou_est_id = indexes.findIndex((val) => {
