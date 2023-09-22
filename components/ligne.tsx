@@ -3,7 +3,8 @@
 
 import { DataRowTransformed } from '@/types/data';
 import { Database } from '@/types/supabase';
-import { Button, Checkbox, ListItem, TextField, Typography } from '@mui/material';
+import { Alert, AlertTitle, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItem, TextField, Typography } from '@mui/material';
+import Delete from '@mui/icons-material/Delete';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import React, { useState } from 'react'
 
@@ -30,6 +31,8 @@ const Ligne = (props: Props) => {
     const [c_vendredi, setC_vendredi] = useState<boolean>(props.data.days[4]);
     const [c_samedi, setC_samedi] = useState<boolean>(props.data.days[5]);
     const [c_dimanche, setC_dimanche] = useState<boolean>(props.data.days[6]);
+
+    const [attentionOpen, setAttentionOpen] = useState<boolean>(false);
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
@@ -172,7 +175,7 @@ const Ligne = (props: Props) => {
         } else {
             bool += "0"
         }
-        console.log("acti = " + activite + " jours " + bool);
+        console.log(`acti = ${activite} jours = ${bool}`);
         changeInitValues(bool, activite);
         setBtnLabel("Edit");
         const { data, error } = await supabase
@@ -182,9 +185,9 @@ const Ligne = (props: Props) => {
             .select();
         if (data) {
             setActivite(() => activite);
-            console.log('UPDATE réussi pour id=' + props.data.id);
+            console.log(`UPDATE réussi pour id= ${props.data.id}`);
         } else if (error) {
-            console.log("ERREUR lors de UPDATE id=" + props.data.id + " / " + error.message);
+            console.log(`ERREUR lors de UPDATE id= ${props.data.id} => ${error.message}`);
         }
     }
 
@@ -215,77 +218,142 @@ const Ligne = (props: Props) => {
         setBtnLabel("Edit");
     }
 
+    const changeLabelActivite: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
+        e.preventDefault();
+        const new_acti = e.target.value;
+        if (new_acti === initial_acti) {
+            setBtnLabel("Edit");
+            setActivite(() => initial_acti);
+        } else {
+            setActivite(() => new_acti);
+            setBtnLabel("Save");
+        }
+    }
+
+    const deleteItem: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.preventDefault();
+        setAttentionOpen(true);
+    }
+    
+    const closeDialogOK: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault();
+        setAttentionOpen(false);
+        const id_to_delete = props.data.id;
+        const rep = await supabase.from("actions").delete().eq("id", id_to_delete).select();
+        const err = rep.error;
+        if (err) {
+            console.log(`ERROR when deleting id=${id_to_delete} : ${err.message}`);
+        }
+    }
+
+    const closeDialogCancel: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.preventDefault();
+        setAttentionOpen(false);
+    }
+
+
     return (
-        <ListItem className="border border-red-400 rounded-lg mb-2 flex flex-col sm:flex-row items-center drop-shadow" key={props.cle} >
-            <TextField label="activité" size='small' className='my-2 mr-4 min-w-min bg-orange-100'
-                InputProps={{ readOnly: false }}
-                value={activite}
-                onChange={(val) => {
-                    val.preventDefault();
-                    const new_acti = val.target.value;
-                    if (new_acti === initial_acti) {
-                        setBtnLabel("Edit");
-                        setActivite(() => initial_acti);
-                    } else {
-                        setActivite(() => new_acti);
-                        setBtnLabel("Save");
-                    }
-                }}
-            />
-            <div className='flex flex-col'>
-                <div className='flex flex-row space-x-2'>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Lun</Typography>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Mar</Typography>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Mer</Typography>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Jeu</Typography>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Ven</Typography>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Sam</Typography>
-                    <Typography variant='body2' className='w-6 text-blue-900'>Dim</Typography>
+        <>
+            <ListItem className="border border-red-400 rounded-lg mb-2 flex flex-col sm:flex-row items-center drop-shadow" key={props.cle} >
+                <div className='flex flex-row items-center mr-3'>
+                    <TextField label="activité" size='small' className='my-2 mr-4 min-w-min bg-orange-100'
+                        InputProps={{ readOnly: false }}
+                        value={activite}
+                        onChange={changeLabelActivite}
+                    />
+                    <Button
+                        size='small'
+                        variant='contained'
+                        className='rounded-md bg-red-300 text-red-50 hover:bg-red-700 hover:text-white'
+                        onClick={deleteItem}>
+                        <Delete />
+                    </Button>
                 </div>
-                <div className='flex flex-row space-x-2'>
-                    <Checkbox className='w-6' checked={c_lundi}
-                        onChange={(e) => {
-                            change_jour(e, 0);
+                <div className='flex flex-col'>
+                    <div className='flex flex-row space-x-2'>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Lun</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Mar</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Mer</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Jeu</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Ven</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Sam</Typography>
+                        <Typography variant='body2' className='w-6 text-blue-900'>Dim</Typography>
+                    </div>
+                    <div className='flex flex-row space-x-2'>
+                        <Checkbox className='w-6' checked={c_lundi}
+                            onChange={(e) => {
+                                change_jour(e, 0);
+                            }}
+                        />
+                        <Checkbox className='w-6' checked={c_mardi} onChange={(e) => {
+                            change_jour(e, 1);
                         }}
-                    />
-                    <Checkbox className='w-6' checked={c_mardi} onChange={(e) => {
-                        change_jour(e, 1);
-                    }}
-                    />
-                    <Checkbox className='w-6' checked={c_mercredi} onChange={(e) => {
-                        change_jour(e, 2);
-                    }}
-                    />
-                    <Checkbox className='w-6' checked={c_jeudi} onChange={(e) => {
-                        change_jour(e, 3);
-                    }}
-                    />
-                    <Checkbox className='w-6' checked={c_vendredi} onChange={(e) => {
-                        change_jour(e, 4);
-                    }}
-                    />
-                    <Checkbox className='w-6' checked={c_samedi} onChange={(e) => {
-                        change_jour(e, 5);
-                    }}
-                    />
-                    <Checkbox className='w-6' checked={c_dimanche} onChange={(e) => {
-                        change_jour(e, 6);
-                    }}
-                    />
+                        />
+                        <Checkbox className='w-6' checked={c_mercredi} onChange={(e) => {
+                            change_jour(e, 2);
+                        }}
+                        />
+                        <Checkbox className='w-6' checked={c_jeudi} onChange={(e) => {
+                            change_jour(e, 3);
+                        }}
+                        />
+                        <Checkbox className='w-6' checked={c_vendredi} onChange={(e) => {
+                            change_jour(e, 4);
+                        }}
+                        />
+                        <Checkbox className='w-6' checked={c_samedi} onChange={(e) => {
+                            change_jour(e, 5);
+                        }}
+                        />
+                        <Checkbox className='w-6' checked={c_dimanche} onChange={(e) => {
+                            change_jour(e, 6);
+                        }}
+                        />
+                    </div>
                 </div>
-            </div>
-            {(btnLabel === "Edit") ? null : <div className='flex flex-row mt-3'>
-                <Button variant='outlined' className='ml-4'
-                    onClick={saveNewData}
-                >{btnLabel}</Button>
-                <Button variant='outlined' className='ml-4'
-                    onClick={resetData}
-                >{"Reset"}</Button>
+                {(btnLabel === "Edit") ? null : <div className='flex flex-row mt-3'>
+                    <Button variant='outlined' className='ml-4'
+                        onClick={saveNewData}
+                    >{btnLabel}</Button>
+                    <Button variant='outlined' className='ml-4'
+                        onClick={resetData}
+                    >{"Reset"}</Button>
 
-            </div>
-            }
-        </ListItem>
+                </div>
+                }
+            </ListItem>
 
+            <Dialog
+                open={attentionOpen}
+                
+            >
+                <DialogContent>
+                    <DialogTitle>
+                        <Typography>Attetntion</Typography>
+                    </DialogTitle>
+                    <DialogContentText>
+                        <Alert severity='warning'>
+                            <AlertTitle>Attention</AlertTitle>
+                            <Typography variant='body2'>Voulez vous supprimer cette action de la base de données ?</Typography>
+                        </Alert>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant='contained'
+                        className='bg-blue-100 text-blue-800 '
+                        onClick={closeDialogCancel}
+                    >
+                        Annuler
+                    </Button>
+                    <Button
+                        variant='contained'
+                        className='bg-blue-200 text-blue-900'
+                        onClick={closeDialogOK}
+                    >Oui</Button>
+                </DialogActions>
+            </Dialog>
+        </>
     )
 }
 

@@ -62,6 +62,7 @@ const ListeActions = (props: Props) => {
                 break;
             case "INSERT":
                 console.log("Realtime INSERT");
+                sup_get();
                 break;
             default:
                 break;
