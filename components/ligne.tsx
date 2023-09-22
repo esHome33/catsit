@@ -234,7 +234,7 @@ const Ligne = (props: Props) => {
         e.preventDefault();
         setAttentionOpen(true);
     }
-    
+
     const closeDialogOK: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault();
         setAttentionOpen(false);
@@ -251,6 +251,14 @@ const Ligne = (props: Props) => {
         setAttentionOpen(false);
     }
 
+
+    function getCoul(arg0: number) {
+        if (props.data.done[arg0]) {
+            return "green";
+        } else {
+            return "red";
+        }
+    }
 
     return (
         <>
@@ -280,32 +288,35 @@ const Ligne = (props: Props) => {
                         <Typography variant='body2' className='w-6 text-blue-900'>Dim</Typography>
                     </div>
                     <div className='flex flex-row space-x-2'>
-                        <Checkbox className='w-6' checked={c_lundi}
+                        <Checkbox
+                            className='w-6'
+                            checked={c_lundi}
                             onChange={(e) => {
                                 change_jour(e, 0);
                             }}
+                            sx={{ '&.Mui-checked': { color: getCoul(0) }, }}
                         />
-                        <Checkbox className='w-6' checked={c_mardi} onChange={(e) => {
+                        <Checkbox className='w-6' checked={c_mardi} sx={{ '&.Mui-checked': { color: getCoul(1) }, }} onChange={(e) => {
                             change_jour(e, 1);
                         }}
                         />
-                        <Checkbox className='w-6' checked={c_mercredi} onChange={(e) => {
+                        <Checkbox className='w-6' checked={c_mercredi} sx={{ '&.Mui-checked': { color: getCoul(2) }, }} onChange={(e) => {
                             change_jour(e, 2);
                         }}
                         />
-                        <Checkbox className='w-6' checked={c_jeudi} onChange={(e) => {
+                        <Checkbox className='w-6' checked={c_jeudi} sx={{ '&.Mui-checked': { color: getCoul(3) }, }} onChange={(e) => {
                             change_jour(e, 3);
                         }}
                         />
-                        <Checkbox className='w-6' checked={c_vendredi} onChange={(e) => {
+                        <Checkbox className='w-6' checked={c_vendredi} sx={{ '&.Mui-checked': { color: getCoul(4) }, }} onChange={(e) => {
                             change_jour(e, 4);
                         }}
                         />
-                        <Checkbox className='w-6' checked={c_samedi} onChange={(e) => {
+                        <Checkbox className='w-6' checked={c_samedi} sx={{ '&.Mui-checked':{color:getCoul(5)}, }} onChange={(e) => {
                             change_jour(e, 5);
                         }}
                         />
-                        <Checkbox className='w-6' checked={c_dimanche} onChange={(e) => {
+                        <Checkbox className='w-6' checked={c_dimanche} sx={{ '&.Mui-checked': { color: getCoul(6) }, }} onChange={(e) => {
                             change_jour(e, 6);
                         }}
                         />
@@ -325,7 +336,7 @@ const Ligne = (props: Props) => {
 
             <Dialog
                 open={attentionOpen}
-                
+
             >
                 <DialogContent>
                     <DialogTitle>
