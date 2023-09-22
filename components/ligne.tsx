@@ -11,6 +11,7 @@ import React, { useState } from 'react'
 type Props = {
     data: DataRowTransformed;
     cle: number;
+    refresh: () => Promise<void>;
 }
 
 
@@ -186,6 +187,7 @@ const Ligne = (props: Props) => {
         if (data) {
             setActivite(() => activite);
             console.log(`UPDATE réussi pour id= ${props.data.id}`);
+            props.refresh();
         } else if (error) {
             console.log(`ERREUR lors de UPDATE id= ${props.data.id} => ${error.message}`);
         }

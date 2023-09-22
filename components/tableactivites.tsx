@@ -23,14 +23,7 @@ const TableActivites = (props: Props) => {
 
     const [dia_is_open, setDia_is_open] = useState<boolean>(false);
 
-    const refreshData = async () => {
-        const { data: datas } = await supabase.from("actions").select();
-        if (datas) {
-            const tr = transform(datas);
-            setDataTransfomed(tr);
-        }
-    }
-
+    
     const stringToBool = (chaine: string) => {
         const bol_vide = [false, false, false, false, false, false, false];
         if (!chaine) {
@@ -47,7 +40,7 @@ const TableActivites = (props: Props) => {
         }
         return retour;
     }
-
+    
     const transform = (donnees: Donnees) => {
         const tr_datas_tmp = donnees.map((elt) => {
             const ch1 = elt.days_to_do;
@@ -66,8 +59,15 @@ const TableActivites = (props: Props) => {
         })
         return tr_datas;
     }
-
-
+    
+    const refreshData = async () => {
+        const { data: datas } = await supabase.from("actions").select();
+        if (datas) {
+            const tr = transform(datas);
+            setDataTransfomed(tr);
+        }
+    }
+    
     const dataTransfomedInitial: DataRowTransformed[] = transform(props.datas);
     const [dataTransfomed, setDataTransfomed] = useState<DataRowTransformed[]>(dataTransfomedInitial);
 
@@ -155,7 +155,7 @@ const TableActivites = (props: Props) => {
             {
                 dataTransfomed.map((val, index) => {
                     //console.log(`lecture index ${index} => valeur = ${val}`);
-                    return (<Ligne key={val.id} data={val} cle={index} />)
+                    return (<Ligne key={val.id} data={val} cle={index} refresh={refreshData} />)
                 })
             }
 
